@@ -1,0 +1,29 @@
+# Ignore dotenv secrets
+.env
+
+# Ignore system/editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.bak
+*.tmp
+*~
+
+# Ignore output from code summarization
+codebase_summary.txt
+
+# Python cache and logs (if relevant)
+__pycache__/
+*.py[cod]
+*.log
+
+# Compiled scripts or binaries
+*.out
+*.exe
+
+# Ansible-specific
+*.retry
+
+# Ignore local volume mount directories (if ever mistakenly added)
+data/
