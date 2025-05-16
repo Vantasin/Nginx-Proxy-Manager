@@ -124,3 +124,13 @@ This enables clean injection of variables like `npm_data_volume`, `zfs_pool`, an
 ## 📝 License
 
 Licensed under the [MIT License](LICENSE).
+
+---
+
+## 🙏 Acknowledgments
+
+- [Nginx Proxy Manager](https://nginxproxymanager.com/) — for making reverse proxy management accessible via a clean UI.
+- [jc21/nginx-proxy-manager](https://hub.docker.com/r/jc21/nginx-proxy-manager) — the official Docker image used in this stack.
+- [ZFS on Linux](https://openzfs.org/wiki/Main_Page) — for enabling robust and efficient storage management.
+- [Ansible](https://www.ansible.com/) — for simplifying environment automation and reproducibility.
+- [Docker](https://www.docker.com/) — the container runtime that powers this stack.
