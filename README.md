@@ -43,16 +43,14 @@ nano .env
 Customize:
 
 ```ini
-TZ=America/Toronto
-
-# Optional ZFS settings
+# If using ZFS (required by preflight.sh):
 ZPOOL=tank
 NPM_DATASET_PATH=docker/volumes/Nginx-Proxy-Manager
 NPM_DATASET=tank/docker/volumes/Nginx-Proxy-Manager
 NPM_DATA_VOLUME=/tank/docker/volumes/Nginx-Proxy-Manager
 
-# Without ZFS, use:
-# NPM_DATA_VOLUME=./data
+# If NOT using ZFS, set:
+ NPM_DATA_VOLUME=./data
 ```
 
 ---
