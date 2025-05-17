@@ -11,7 +11,7 @@ It supports optional ZFS integration for advanced users who wish to mount data v
 - 🌐 Deploys `jc21/nginx-proxy-manager:latest` via Docker Compose  
 - 🔐 Persistent storage for config and SSL certs using `.env`  
 - 📜 Includes `preflight.sh` to verify and create ZFS datasets if needed  
-- ⚙️ Compatible with Ansible templating and GitOps workflows  
+- ⚙️ Compatible with Ansible templating for infrastructure automation  
 - 🛡️ Uses `network_mode: host` for clean port binding (optional for homelab setups)
 
 ---
