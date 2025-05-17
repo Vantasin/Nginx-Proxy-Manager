@@ -83,6 +83,15 @@ http://localhost:81
 
 Or replace `localhost` with your server’s IP address.
 
+### 🔑 Initial Login Credentials
+
+Use the following default credentials to log in for the first time:
+
+- **Email:** `admin@example.com`
+- **Password:** `changeme`
+
+> **Note:** For security purposes, make sure to change the default password immediately after logging in.
+
 ---
 
 ## 🤖 Optional: Ansible Integration
