@@ -27,3 +27,6 @@ __pycache__/
 
 # Ignore local volume mount directories (if ever mistakenly added)
 data/
+
+# Ignore VS Code workspace settings
+.vscode/
