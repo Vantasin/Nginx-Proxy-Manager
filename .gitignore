@@ -1,32 +1,28 @@
-# Ignore dotenv secrets
+# Ignore environment files with secrets
 .env
 
-# Ignore system/editor files
-.DS_Store
-Thumbs.db
-*.swp
-*.swo
-*.bak
-*.tmp
+# Ignore backup files
 *~
+*.bak
+*.swp
 
-# Ignore output from code summarization
-codebase_summary.txt
+# Ignore local Docker volumes (if mapped inside repo)
+data/
+volumes/
 
-# Python cache and logs (if relevant)
-__pycache__/
-*.py[cod]
+# Ignore editor/IDE metadata
+.vscode/
+.idea/
+.DS_Store
+
+# Ignore logs
 *.log
 
-# Compiled scripts or binaries
-*.out
-*.exe
+# Ignore compiled Python files (if any scripts are added later)
+__pycache__/
+*.pyc
 
-# Ansible-specific
-*.retry
-
-# Ignore local volume mount directories (if ever mistakenly added)
-data/
-
-# Ignore VS Code workspace settings
-.vscode/
+# Ignore Developer Tools
+git_push.py
+summarize_codebase.sh
+codebase_summary.txt
