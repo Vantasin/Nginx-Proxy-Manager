@@ -126,7 +126,13 @@ Sign up at [DuckDNS.org](https://www.duckdns.org/) and create a new subdomain (e
 5. Leave **Propagation Seconds** blank (or increase if you see DNS timeout errors).  
 6. Agree to the Terms and click **Save**.  
 
-<img src="images/encrypt.png" alt="Request Let’s Encrypt" style="width:50%; height:auto;" />
+<p align="center">
+  <img
+    src="images/encrypt.png"
+    alt="Request Let’s Encrypt"
+    style="width:50%; height:auto;"
+  />
+</p>
 
 > **Tip:** using a wildcard cert means any sub-domain (`foo.example.duckdns.org`, `bar.example.duckdns.org`) will be covered.
 
@@ -147,7 +153,13 @@ Sign up at [DuckDNS.org](https://www.duckdns.org/) and create a new subdomain (e
 
 > **Note:** if you want to self host your services and access them outside of your Local Network Area (LAN) without port forwarding you can use a VPN like [Tailscale](https://tailscale.com/download/linux) that provides Network Access Traversal (NAT). You simply need to install Tailscale on the Host server, create a free account and use your Host Server's Tailscale IP in the **Forward Hostname / IP** field.
 
-<img src="images/proxy-host.png" alt="New Proxy Host UI" style="width:50%; height:auto;" />
+<p align="center">
+  <img
+    src="images/proxy-host.png"
+    alt="New Proxy Host UI"
+    style="width:50%; height:auto;"
+  />
+</p>
 
 You can now visit your NPM dashboard securely at `https://nginx.example.duckdns.org`
 
