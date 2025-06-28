@@ -174,7 +174,7 @@ When changes are pushed to the Git repository:
 2. The `.env` file is rendered from `env.template` using `envsubst`.
 3. The Docker Compose stack is restarted to apply updates.
 
-> **Note:** the CI pipeline will break if Woodpecker CI depends on Nginx Proxy Manager, eg. Nginx Proxy Manager is the proxy host for the Woodpecker CI service.
+> ⚠️ **Note:** the CI pipeline will break if Woodpecker CI depends on Nginx Proxy Manager, eg. Nginx Proxy Manager is the proxy host for the Woodpecker CI service.
 
 ---
 
