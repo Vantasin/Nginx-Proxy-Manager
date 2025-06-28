@@ -12,15 +12,16 @@ It supports optional ZFS integration for advanced users who wish to mount data v
 tank/
 ├── docker/
 │   ├── compose/
-│   │   └── nginx-proxy-manager/              # Git repo lives here
+│   │   └── nginx-proxy-manager/    # Git repo lives here
 │   │       ├── docker-compose.yml  # Main Docker Compose config
 │   │       ├── .env                # Runtime environment variables and secrets (gitignored!)
 │   │       ├── env.example         # Example .env file for reference
 │   │       ├── env.template        # Optional template
 │   │       ├── .woodpecker.yml     # CI/CD pipeline definition for auto-deploy
-│   │       └── README.md           # This file
+│   │       ├── README.md           # This file
+│   │       └── images/             # Images used in the README.md
 │   └── data/
-│       └── nginx-proxy-manager/              # Volume mounts and persistent data
+│       └── nginx-proxy-manager/    # Volume mounts and persistent data
 ```
 
 ---
