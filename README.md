@@ -128,22 +128,23 @@ Sign up at [DuckDNS.org](https://www.duckdns.org/) and create a new subdomain (e
 ![Request Let’s Encrypt](images/encrypt.png)
 
 > **Tip:** using a wildcard cert means any sub-domain (`foo.example.duckdns.org`, `bar.example.duckdns.org`) will be covered.
+
 > **Note:** you can use any domain you want, we just went with DuckDNS because it is free.
 
 ### 3. Add Nginx Proxy Manager itself as a secure proxy host  
 1. In the NPM UI, click **Proxy Hosts → Add Proxy Host**.  
 2. Under **Details**:  
-- **Domain Names**: `nginx.example.duckdns.org`  
-- **Scheme**: `http`  
-- **Forward Hostname / IP**: the local IP of your NPM container (e.g. your host IP address)  
-- **Forward Port**: `81`  
+    - **Domain Names**: `nginx.example.duckdns.org`  
+    - **Scheme**: `http`  
+    - **Forward Hostname / IP**: the local IP of your NPM container (e.g. your host IP address)  
+    - **Forward Port**: `81`  
 3. Switch to the **SSL** tab:  
-- Check **Enable SSL**  
-- From the **Certificate** dropdown select your `*.example.duckdns.org` certificate  
-- Enable **Force SSL** to redirect all HTTP → HTTPS  
+    - Check **Enable SSL**  
+    - From the **Certificate** dropdown select your `*.example.duckdns.org` certificate  
+    - Enable **Force SSL** to redirect all HTTP → HTTPS  
 4. Click **Save**.
 
-> **Note:** if you want to self host your services and access them outside of your Local Network Area (LAN) without port forwarding you can use a VPN like [Tailscale](https://tailscale.com/download/linux) that provides Network Access Traversal (NAT). You simply need to install Tailscale on the Host server and use your Host Server's Tailscale IP in the **Forward Hostname / IP** field.
+> **Note:** if you want to self host your services and access them outside of your Local Network Area (LAN) without port forwarding you can use a VPN like [Tailscale](https://tailscale.com/download/linux) that provides Network Access Traversal (NAT). You simply need to install Tailscale on the Host server, create a free account and use your Host Server's Tailscale IP in the **Forward Hostname / IP** field.
 
 ![New Proxy Host for NPM UI](images/proxy-host.png)
 
