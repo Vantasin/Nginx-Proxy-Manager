@@ -109,6 +109,48 @@ Use the following default credentials to log in for the first time:
 
 ---
 
+## 🔒 Secure Access with Wildcard SSL & DuckDNS
+
+To expose **Nginx Proxy Manager** over HTTPS on your own DuckDNS domain (e.g. `example.duckdns.org`), follow these steps:
+
+### 1. Create your DuckDNS entry  
+Sign up at [DuckDNS.org](https://www.duckdns.org/) and create a new subdomain (e.g. `example.duckdns.org`).  
+
+### 2. Obtain a wildcard Let’s Encrypt certificate  
+1. In the NPM UI, go to **SSL → Add Let’s Encrypt Certificate**.  
+2. Under **Domain Names**, enter your `*` wild card and duckdns domains eg.:  
+`*.example.duckdns.org` & `example.duckdns.org`
+3. Supply your email address and toggle **Use a DNS Challenge**.  
+4. Select **DuckDNS** as the DNS provider and paste your DuckDNS token into **Credentials File Content** ensure there are no extra spaces.  
+5. Leave **Propagation Seconds** blank (or increase if you see DNS timeout errors).  
+6. Agree to the Terms and click **Save**.  
+
+![Request Let’s Encrypt](images/encrypt.png)
+
+> **Tip:** using a wildcard cert means any sub-domain (`foo.example.duckdns.org`, `bar.example.duckdns.org`) will be covered.
+> **Note:** you can use any domain you want, we just went with DuckDNS because it is free.
+
+### 3. Add Nginx Proxy Manager itself as a secure proxy host  
+1. In the NPM UI, click **Proxy Hosts → Add Proxy Host**.  
+2. Under **Details**:  
+- **Domain Names**: `nginx.example.duckdns.org`  
+- **Scheme**: `http`  
+- **Forward Hostname / IP**: the local IP of your NPM container (e.g. your host IP address)  
+- **Forward Port**: `81`  
+3. Switch to the **SSL** tab:  
+- Check **Enable SSL**  
+- From the **Certificate** dropdown select your `*.example.duckdns.org` certificate  
+- Enable **Force SSL** to redirect all HTTP → HTTPS  
+4. Click **Save**.
+
+> **Note:** if you want to self host your services and access them outside of your Local Network Area (LAN) without port forwarding you can use a VPN like [Tailscale](https://tailscale.com/download/linux) that provides Network Access Traversal (NAT). You simply need to install Tailscale on the Host server and use your Host Server's Tailscale IP in the **Forward Hostname / IP** field.
+
+![New Proxy Host for NPM UI](images/proxy-host.png)
+
+You can now visit your NPM dashboard securely at `https://nginx.example.duckdns.org`
+
+---
+
 ## 🚀 Continuous Deployment with Woodpecker
 
 This project includes a `.woodpecker.yml` pipeline for automated deployment using [Woodpecker CI](https://woodpecker-ci.org/).
