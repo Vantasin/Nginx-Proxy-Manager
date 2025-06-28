@@ -151,7 +151,7 @@ Sign up at [DuckDNS.org](https://www.duckdns.org/) and create a new subdomain (e
     - Enable **Force SSL** to redirect all HTTP → HTTPS  
 4. Click **Save**.
 
-> **Note:** if you want to self host your services and access them outside of your Local Network Area (LAN) without port forwarding you can use a VPN like [Tailscale](https://tailscale.com/download/linux) that provides Network Access Traversal (NAT). You simply need to install Tailscale on the Host server, create a free account and use your Host Server's Tailscale IP in the **Forward Hostname / IP** field.
+> **Note:** if you want to self host your services and access them outside of your Local Network Area (LAN) without port forwarding you can use a VPN like [Tailscale](https://tailscale.com/download/linux) that provides Network Address Translation (NAT) Traversal. You simply need to install Tailscale on the host server, create a free account and use your host server's Tailscale IP in the **Forward Hostname / IP** field.
 
 <p align="center">
   <img
@@ -185,5 +185,6 @@ When changes are pushed to the Git repository:
 - [`envsubst`](https://man7.org/linux/man-pages/man1/envsubst.1.html) for lightweight environment variable substitution in template files.
 - [jc21/nginx-proxy-manager](https://hub.docker.com/r/jc21/nginx-proxy-manager) the official Docker image used in this stack.
 - [Nginx Proxy Manager](https://nginxproxymanager.com/) for making reverse proxy management accessible via a clean UI.
+- [Tailscale](https://tailscale.com/) for providing seamless, secure mesh networking with automatic NAT traversal using WireGuard.
 - [Woodpecker CI](https://woodpecker-ci.org/) for lightweight, self-hosted continuous integration.
 - [ZFS](https://openzfs.org/) for advanced local filesystem features, dataset organization, and snapshotting.
