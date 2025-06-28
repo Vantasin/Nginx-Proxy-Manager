@@ -1,4 +1,4 @@
-# 🌐 Nginx Proxy Manager Docker Stack with Optional ZFS Integration
+# 📦 Nginx Proxy Manager Docker Compose Stack
 
 This repository provides a self-contained Docker Compose stack to run [Nginx Proxy Manager](https://nginxproxymanager.com/), a modern UI for managing Nginx-based reverse proxies with automatic SSL via Let's Encrypt.
 
@@ -6,72 +6,87 @@ It supports optional ZFS integration for advanced users who wish to mount data v
 
 ---
 
-## 📁 Features
-
-- 🌐 Deploys `jc21/nginx-proxy-manager:latest` via Docker Compose  
-- 🔐 Persistent storage for config and SSL certs using `.env`  
-- 📜 Includes `preflight.sh` to verify and create ZFS datasets if needed  
-- ⚙️ Compatible with Ansible templating for infrastructure automation  
-- 🛡️ Uses `network_mode: host` for clean port binding (optional for homelab setups)
-
----
-
-## ⚙️ Requirements
-
-- Docker and Docker Compose installed
-- (Optional) ZFS installed if you want dataset-backed volumes
-- (Optional) Ansible for templating `.env` files via `env.j2`
-
----
-
-## 🚀 Usage
-
-### 📦 1. Clone the Repository
+## 📁 Directory Structure
 
 ```bash
-git clone https://github.com/Vantasin/Nginx-Proxy-Manager.git
-cd Nginx-Proxy-Manager
-```
-
-### ⚙️ 2. Set Up the `.env` File
-
-```bash
-cp env.example .env
-nano .env
-```
-
-Customize:
-
-```ini
-# If using ZFS (required by preflight.sh):
-ZPOOL=tank
-NPM_DATASET_PATH=docker/volumes/Nginx-Proxy-Manager
-NPM_DATASET=tank/docker/volumes/Nginx-Proxy-Manager
-NPM_DATA_VOLUME=/tank/docker/volumes/Nginx-Proxy-Manager
-
-# If NOT using ZFS, set:
- NPM_DATA_VOLUME=./data
+tank/
+├── docker/
+│   ├── compose/
+│   │   └── nginx-proxy-manager/              # Git repo lives here
+│   │       ├── docker-compose.yml  # Main Docker Compose config
+│   │       ├── .env                # Runtime environment variables and secrets (gitignored!)
+│   │       ├── env.example         # Example .env file for reference
+│   │       ├── env.template        # Optional template
+│   │       ├── .woodpecker.yml     # CI/CD pipeline definition for auto-deploy
+│   │       └── README.md           # This file
+│   └── data/
+│       └── nginx-proxy-manager/              # Volume mounts and persistent data
 ```
 
 ---
 
-### 🧪 3. Run ZFS Preflight (Optional)
+## 🧰 Prerequisites
 
-```bash
-./preflight.sh
-```
+* Docker Engine
+* Docker Compose V2
+* Git
+* (Optional) ZFS on Linux for dataset management
 
-This script checks for required ZFS pool and dataset and creates it if needed.
+> ⚠️ **Note:** These instructions assume your ZFS pool is named `tank`. If your pool has a different name (e.g., `rpool`, `zdata`, etc.), replace `tank` in all paths and commands
+with your actual pool name.
+
+---
+
+## ⚙️ Setup Instructions
+
+1. **Create the stack directory and clone the repository**
+
+   If using ZFS:
+   ```bash
+   sudo zfs create -p tank/docker/compose/nginx-proxy-manager
+   cd /tank/docker/compose/nginx-proxy-manager
+   sudo git clone https://github.com/Vantasin/Nginx-Proxy-Manager.git .
+   ```
+
+   If using standard directories:
+   ```bash
+   mkdir -p ~/docker/compose/nginx-proxy-manager
+   cd ~/docker/compose/nginx-proxy-manager
+   git clone https://github.com/Vantasin/Nginx-Proxy-Manager.git .
+   ```
+
+2. **Create the runtime data directory** (optional)
+
+   If using ZFS:
+   ```bash
+   sudo zfs create -p tank/docker/data/nginx-proxy-manager
+   ```
+
+   If using standard directories:
+   ```bash
+   mkdir -p ~/docker/data/nginx-proxy-manager
+   ```
+
+3. **Configure environment variables**
+
+   Copy and modify the `.env` file:
+
+   ```bash
+   sudo cp env.example .env
+   sudo nano .env
+   sudo chmod 600 .env
+   ```
+
+   > Alternatively generate the `.env` file using the `env.template` template with Woodpecker CI's `.woodpecker.yml`.
+
+4. **Start Nginx Proxy Manager**
+
+   ```bash
+   docker compose up -d
+   ```
 
 ---
 
-### 🐳 4. Launch the Stack
-
-```bash
-docker compose up -d
-```
-
----
 
 ## 🌐 Access Nginx Proxy Manager
 
@@ -94,52 +109,23 @@ Use the following default credentials to log in for the first time:
 
 ---
 
-## 🤖 Optional: Ansible Integration
+## 🚀 Continuous Deployment with Woodpecker
 
-You can use the included `env.j2` file to generate your `.env` dynamically using Ansible.
+This project includes a `.woodpecker.yml` pipeline for automated deployment using [Woodpecker CI](https://woodpecker-ci.org/).
 
-### Example:
-
-```yaml
-- name: Template .env for {{ stack.name }}
-  template:
-    src: "{{ compose_root }}/{{ stack.name }}/env.j2"
-    dest: "{{ compose_root }}/{{ stack.name }}/.env"
-```
-
-Where `compose_root` is typically:
-
-```
-/tank/docker/compose
-```
-
-This enables clean injection of variables like `npm_data_volume`, `zfs_pool`, and `npm_dataset`.
-
----
-
-## 📄 File Overview
-
-| File                   | Description                                               |
-|------------------------|-----------------------------------------------------------|
-| `docker-compose.yml`   | Nginx Proxy Manager container definition                  |
-| `env.example`          | Example environment file                                  |
-| `env.j2`               | Ansible template for generating `.env`                    |
-| `preflight.sh`         | Script to create a ZFS dataset if it doesn't exist        |
-| `git_push.py`          | Helper to stage, commit, and push to all git remotes      |
-| `summarize_codebase.sh`| Script to auto-generate `codebase_summary.txt`           |
-
----
-
-## 📝 License
-
-Licensed under the [MIT License](LICENSE).
+When changes are pushed to the Git repository:
+1. The pipeline is triggered by the Woodpecker server.
+2. The `.env` file is rendered from `env.template` using `envsubst`.
+3. The Docker Compose stack is restarted to apply updates.
 
 ---
 
 ## 🙏 Acknowledgments
 
-- [Nginx Proxy Manager](https://nginxproxymanager.com/) — for making reverse proxy management accessible via a clean UI.
-- [jc21/nginx-proxy-manager](https://hub.docker.com/r/jc21/nginx-proxy-manager) — the official Docker image used in this stack.
-- [ZFS on Linux](https://openzfs.org/wiki/Main_Page) — for enabling robust and efficient storage management.
-- [Ansible](https://www.ansible.com/) — for simplifying environment automation and reproducibility.
-- [Docker](https://www.docker.com/) — the container runtime that powers this stack.
+- [ChatGPT](https://openai.com/chatgpt) for assistance in generating setup scripts and templates.
+- [Docker](https://www.docker.com/) for container orchestration and runtime.
+- [`envsubst`](https://man7.org/linux/man-pages/man1/envsubst.1.html) for lightweight environment variable substitution in template files.
+- [jc21/nginx-proxy-manager](https://hub.docker.com/r/jc21/nginx-proxy-manager) the official Docker image used in this stack.
+- [Nginx Proxy Manager](https://nginxproxymanager.com/) for making reverse proxy management accessible via a clean UI.
+- [Woodpecker CI](https://woodpecker-ci.org/) for lightweight, self-hosted continuous integration.
+- [ZFS](https://openzfs.org/) for advanced local filesystem features, dataset organization, and snapshotting.
