@@ -5,8 +5,8 @@ services:
     restart: unless-stopped
     network_mode: "host"
     volumes:
-      - ${NPM_DATA_VOLUME}/data/data:/data
-      - ${NPM_DATA_VOLUME}/data/letsencrypt:/etc/letsencrypt
+      - ${NPM_DATA_VOLUME}/data:/data
+      - ${NPM_DATA_VOLUME}/letsencrypt:/etc/letsencrypt
 ####
 #
 #     Default Administrator User login:
