@@ -1,0 +1,37 @@
+---
+name: Deploy Portainer
+
+when:
+  event:
+    - push
+
+steps:
+  - name: git-pull
+    image: alpine/git
+    volumes:
+      - /tank:/tank
+    commands:
+      - git config --global --add safe.directory /tank/docker/compose/nginx-proxy-manager
+      - git -C /tank/docker/compose/nginx-proxy-manager pull origin main
+
+  - name: render-env
+    image: alpine:latest
+    volumes:
+      - /tank:/tank
+    environment:
+      NPM_DATA_VOLUME: /tank/docker/data/nginx-proxy-manager
+    commands:
+      - apk add --no-cache gettext
+      - cd /tank/docker/compose/nginx-proxy-manager
+      - envsubst < env.template > .env
+      - chmod 600 .env
+
+  - name: restart-compose
+    image: docker:cli
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tank:/tank
+    commands:
+      - cd /tank/docker/compose/nginx-proxy-manager
+      - docker compose down
+      - docker compose up -d
