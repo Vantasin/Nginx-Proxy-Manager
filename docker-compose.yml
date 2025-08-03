@@ -1,12 +1,23 @@
+---
 services:
   nginx:
-    image: 'jc21/nginx-proxy-manager:latest'
+    image: jc21/nginx-proxy-manager:latest
     container_name: nginx-proxy-manager
     restart: unless-stopped
-    network_mode: "host"
+    ports:
+      - "80:80"     # HTTP
+      - "81:81"     # NPM Admin
+      - "443:443"   # HTTPS
     volumes:
       - ${NPM_DATA_VOLUME}/data:/data
       - ${NPM_DATA_VOLUME}/letsencrypt:/etc/letsencrypt
+    networks:
+      - npm_proxy
+
+networks:
+  npm_proxy:
+    external: true
+
 ####
 #
 #     Default Administrator User login:

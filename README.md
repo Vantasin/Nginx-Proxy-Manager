@@ -1,5 +1,12 @@
 # 📦 Nginx Proxy Manager Docker Compose Stack
 
+[![MIT License](https://img.shields.io/github/license/Vantasin/Nginx-Proxy-Manager?style=flat-square)](LICENSE)
+[![Docker Compose](https://img.shields.io/badge/Docker-Compose-blue?logo=docker)](https://www.docker.com/)
+[![ZFS](https://img.shields.io/badge/ZFS-OpenZFS-blue?style=flat-square)](https://openzfs.org/)
+
+[![Tailscale](https://img.shields.io/badge/Tailscale-Enabled-blue?logo=tailscale&logoColor=white)](https://tailscale.com)
+[![Nginx Proxy Manager](https://img.shields.io/badge/Nginx_Proxy_Manager-Reverse%20Proxy-orange?logo=nginx&logoColor=white)](https://nginxproxymanager.com)
+
 This repository provides a self-contained Docker Compose stack to run [Nginx Proxy Manager](https://nginxproxymanager.com/), a modern UI for managing Nginx-based reverse proxies with automatic SSL via Let's Encrypt.
 
 It supports optional ZFS integration for advanced users who wish to mount data volumes onto a ZFS dataset. The stack remains fully usable without ZFS.
@@ -16,8 +23,6 @@ tank/
 │   │       ├── docker-compose.yml  # Main Docker Compose config
 │   │       ├── .env                # Runtime environment variables and secrets (gitignored!)
 │   │       ├── env.example         # Example .env file for reference
-│   │       ├── env.template        # Optional template
-│   │       ├── .woodpecker.yml     # CI/CD pipeline definition for auto-deploy
 │   │       ├── README.md           # This file
 │   │       └── images/             # Images used in the README.md
 │   └── data/
@@ -56,7 +61,7 @@ with your actual pool name.
    git clone https://github.com/Vantasin/Nginx-Proxy-Manager.git .
    ```
 
-2. **Create the runtime data directory** (optional)
+2. **Create the runtime data directory**
 
    If using ZFS:
    ```bash
@@ -78,12 +83,19 @@ with your actual pool name.
    sudo chmod 600 .env
    ```
 
-   > Alternatively generate the `.env` file using the `env.template` template with Woodpecker CI's `.woodpecker.yml`.
+> **Note:** You only need to change the `.env` file if you are not using the default storage path.
 
-4. **Start Nginx Proxy Manager**
+4. **Create the custom user-defined external network**
 
    ```bash
-   docker compose up -d
+   sudo docker network create npm_proxy
+   ```
+
+
+5. **Start Nginx Proxy Manager**
+
+   ```bash
+   sudo docker compose up -d
    ```
 
 ---
@@ -114,17 +126,19 @@ Use the following default credentials to log in for the first time:
 
 To expose **Nginx Proxy Manager** over HTTPS on your own DuckDNS domain (e.g. `example.duckdns.org`), follow these steps:
 
-### 1. Create your DuckDNS entry  
-Sign up at [DuckDNS.org](https://www.duckdns.org/) and create a new subdomain (e.g. `example.duckdns.org`).  
+### 1. Create your DuckDNS entry
+Sign up at [DuckDNS.org](https://www.duckdns.org/) and create a new subdomain (e.g. `example.duckdns.org`).
 
-### 2. Obtain a wildcard Let’s Encrypt certificate  
-1. In the NPM UI, go to **SSL → Add Let’s Encrypt Certificate**.  
-2. Under **Domain Names**, enter your `*` wild card and duckdns domains eg.:  
+> **Note:** if you want to access your  self hosted services outside of your Local Network Area (LAN) without port forwarding you can use a VPN like [Tailscale](https://tailscale.com/download/linux). You simply need to install Tailscale on the host server, create a free account and point your domain to your Host's Tailscale IP.
+
+### 2. Obtain a wildcard Let’s Encrypt certificate
+1. In the NPM UI, go to **SSL → Add Let’s Encrypt Certificate**.
+2. Under **Domain Names**, enter your `*` wild card and duckdns domains eg.:
 `*.example.duckdns.org` & `example.duckdns.org`
-3. Supply your email address and toggle **Use a DNS Challenge**.  
-4. Select **DuckDNS** as the DNS provider and paste your DuckDNS token into **Credentials File Content** ensure there are no extra spaces.  
-5. Leave **Propagation Seconds** blank (or increase if you see DNS timeout errors).  
-6. Agree to the Terms and click **Save**.  
+3. Supply your email address and toggle **Use a DNS Challenge**.
+4. Select **DuckDNS** as the DNS provider and paste your DuckDNS token into **Credentials File Content** ensure there are no extra spaces.
+5. Leave **Propagation Seconds** blank (or increase if you see DNS timeout errors).
+6. Agree to the Terms and click **Save**.
 
 <p align="center">
   <img
@@ -138,20 +152,20 @@ Sign up at [DuckDNS.org](https://www.duckdns.org/) and create a new subdomain (e
 
 > **Note:** you can use any domain you want, we just went with DuckDNS because it is free.
 
-### 3. Add Nginx Proxy Manager itself as a secure proxy host  
-1. In the NPM UI, click **Proxy Hosts → Add Proxy Host**.  
-2. Under **Details**:  
-    - **Domain Names**: `nginx.example.duckdns.org`  
-    - **Scheme**: `http`  
-    - **Forward Hostname / IP**: the local IP of your NPM container (e.g. your host IP address)  
-    - **Forward Port**: `81`  
-3. Switch to the **SSL** tab:  
-    - Check **Enable SSL**  
-    - From the **Certificate** dropdown select your `*.example.duckdns.org` certificate  
-    - Enable **Force SSL** to redirect all HTTP → HTTPS  
+### 3. Add Nginx Proxy Manager itself as a proxy host
+1. In the NPM UI, click **Proxy Hosts → Add Proxy Host**.
+2. Under **Details**:
+    - **Domain Names**: `nginx.example.duckdns.org`
+    - **Scheme**: `http`
+    - **Forward Hostname / IP**: `nginx-proxy-manager` (the Nginx Proxy Manager container name)
+    - **Forward Port**: `81`
+3. Switch to the **SSL** tab:
+    - Check **Enable SSL**
+    - From the **Certificate** dropdown select your `*.example.duckdns.org` certificate
+    - Enable **Force SSL** to redirect all HTTP → HTTPS
 4. Click **Save**.
 
-> **Note:** if you want to self host your services and access them outside of your Local Network Area (LAN) without port forwarding you can use a VPN like [Tailscale](https://tailscale.com/download/linux) that provides Network Address Translation (NAT) Traversal. You simply need to install Tailscale on the host server, create a free account and use your host server's Tailscale IP in the **Forward Hostname / IP** field.
+> **Note:** After adding the Nginx Proxy Manager admin GUI as a proxy host you should comment out or delete the line `- "81:81" # NPM Admin` in your `docker-compose.yml` file. This means all traffic to your Nginx Proxy Manager admin GUI has to be routed through Nginx Proxy Manager.
 
 <p align="center">
   <img
@@ -165,26 +179,11 @@ You can now visit your NPM dashboard securely at `https://nginx.example.duckdns.
 
 ---
 
-## 🚀 Continuous Deployment with Woodpecker
-
-This project includes a `.woodpecker.yml` pipeline for automated deployment using [Woodpecker CI](https://woodpecker-ci.org/).
-
-When changes are pushed to the Git repository:
-1. The pipeline is triggered by the Woodpecker server.
-2. The `.env` file is rendered from `env.template` using `envsubst`.
-3. The Docker Compose stack is restarted to apply updates.
-
-> ⚠️ **Note:** the CI pipeline may break if Woodpecker CI depends on Nginx Proxy Manager, eg. Nginx Proxy Manager is the proxy host for the Woodpecker CI service.
-
----
-
 ## 🙏 Acknowledgments
 
 - [ChatGPT](https://openai.com/chatgpt) for assistance in generating setup scripts and templates.
 - [Docker](https://www.docker.com/) for container orchestration and runtime.
-- [`envsubst`](https://man7.org/linux/man-pages/man1/envsubst.1.html) for lightweight environment variable substitution in template files.
 - [jc21/nginx-proxy-manager](https://hub.docker.com/r/jc21/nginx-proxy-manager) the official Docker image used in this stack.
 - [Nginx Proxy Manager](https://nginxproxymanager.com/) for making reverse proxy management accessible via a clean UI.
 - [Tailscale](https://tailscale.com/) for providing seamless, secure mesh networking with automatic NAT traversal using WireGuard.
-- [Woodpecker CI](https://woodpecker-ci.org/) for lightweight, self-hosted continuous integration.
 - [ZFS](https://openzfs.org/) for advanced local filesystem features, dataset organization, and snapshotting.
