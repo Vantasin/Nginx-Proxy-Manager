@@ -141,7 +141,7 @@ Sign up at [DuckDNS.org](https://www.duckdns.org/) and create a new subdomain (e
 ### 3. Add Nginx Proxy Manager itself as a secure proxy host  
 1. In the NPM UI, click **Proxy Hosts → Add Proxy Host**.  
 2. Under **Details**:  
-    - **Domain Names**: `nginx.example.duckdns.org`  
+    - **Domain Names**: `proxy.example.duckdns.org`  
     - **Scheme**: `http`  
     - **Forward Hostname / IP**: the local IP of your NPM container (e.g. your host IP address)  
     - **Forward Port**: `81`  
@@ -161,7 +161,7 @@ Sign up at [DuckDNS.org](https://www.duckdns.org/) and create a new subdomain (e
   />
 </p>
 
-You can now visit your NPM dashboard securely at `https://nginx.example.duckdns.org`
+You can now visit your NPM dashboard securely at `https://proxy.example.duckdns.org`
 
 ---
 
