@@ -5,9 +5,9 @@ services:
     container_name: nginx-proxy-manager
     restart: unless-stopped
     ports:
-      - "80:80"     # HTTP
-      - "81:81"     # NPM Admin
-      - "443:443"   # HTTPS
+      - "${NPM_IP_BIND}:80:80"     # HTTP
+      - "81:81"                    # NPM Admin
+      - "${NPM_IP_BIND}:443:443"   # HTTPS
     volumes:
       - ${NPM_DATA_VOLUME}/data:/data
       - ${NPM_DATA_VOLUME}/letsencrypt:/etc/letsencrypt
